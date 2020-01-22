@@ -46,6 +46,17 @@ class Hero(Character):
         self.coins -= item.cost
         item.apply(hero)
 
+    def attack(self, enemy):
+        if not self.alive():
+            return
+        print("%s attacks %s" % (self.name, enemy.name))
+        if random.randint(1, 5) == 5:
+            enemy.receive_damage(self.power * 2)
+            print("Critical Hit!!!!!")
+        else:
+            enemy.receive_damage(self.power)
+        time.sleep(1.5)
+
 class Goblin(Character):
     def __init__(self):
         self.name = 'goblin'
@@ -66,6 +77,90 @@ class Wizard(Character):
         super(Wizard, self).attack(enemy)
         if swap_power:
             self.power, enemy.power = enemy.power, self.power
+
+
+class Medic(Character):
+    def __init__(self):
+        self.name = "medic"
+        self.health = 8
+        self.power = 3
+
+    def receive_damage(self, points):
+        self.health -= points
+        print("%s received %d damage." % (self.name, points))
+        if random.randint(1, 5) == 5:
+            self.health += 2
+            print("%s healed %d damage." % (self.name, points)) 
+        if self.health <= 0:
+            print("%s is dead." % self.name)
+
+class Shadow(Character):
+    def __init__(self):
+        self.name = "shadow"
+        self.health = 1
+        self.power = 3
+
+    def receive_damage(self, points):
+        if random.randint(1, 10) == 10:
+            self.health -= points
+            print("%s received %d damage." % (self.name, points))
+        else:
+            print("%s dodged the attack!!!!" % (self.name))
+        if self.health <= 0:
+            print("%s is dead." % self.name)
+
+class Zombie(Character):
+    def __init__(self):
+        self.name = "zombie"
+        self.health = 1
+        self.power = 3
+
+    def receive_damage(self, points):
+        self.health -= points
+        print("%s received %d damage." % (self.name, points))
+        if self.health <= 0:
+            print("Damn %s won't die!!!" % self.name)
+    def alive(self):
+        return True
+class Skeleton(Character):
+    def __init__(self):
+        self.name = "skeleton"
+        self.health = 7
+        self.power = 2
+
+    def receive_damage(self, points):
+        self.health -= points
+        print("%s received %d damage." % (self.name, points))
+        if self.health <= 0:
+            print("%s is dead." % self.name)
+        elif self.health <= 2:
+            self.power *= 3 
+            print("%s gains power!!!" % self.name)
+        else:
+            pass
+
+class Ghost(Character):
+    def __init__(self):
+        self.name = "ghost"
+        self.health = 27
+        self.power = random.randit(3, 5)
+
+    def attack(self, enemy):
+        if not self.alive():
+            return
+        print("%s attacks %s" % (self.name, enemy.name))
+        enemy.receive_damage(self.power)
+        self.power = random.randit(3, 5)
+        time.sleep(1.5)
+    
+
+        
+        
+        
+        
+
+
+    
 
 class Battle(object):
     def do_battle(self, hero, enemy):
@@ -140,7 +235,7 @@ class Store(object):
                 hero.buy(item)
 
 hero = Hero()
-enemies = [Goblin(), Wizard()]
+enemies = [Goblin(), Wizard(), Medic(), Shadow(), Skeleton(), Zombie()]
 battle_engine = Battle()
 shopping_engine = Store()
 
